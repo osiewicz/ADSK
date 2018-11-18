@@ -1,0 +1,23 @@
+---
+- hosts: aws_nodes
+  vars:
+     github_src: "https://github.com/osiewicz/Statula"
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: latest
+    - name: Install gcc
+      yum:
+        name: gcc
+        state: latest
+      become: yes
+    - git:
+        repo: "{{ github_src }}"
+        dest: /tmp/statula
+      become: yes
+    - make:
+        chdir: /tmp/statula/src
+        file: /tmp/statula/src/Makefile
+        target: install
+      become: yes

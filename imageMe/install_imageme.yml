@@ -1,0 +1,27 @@
+---
+- hosts: aws_nodes
+  vars:
+     github_src: "https://github.com/jkanclerz/google-search-python.git"
+     search_engine_id: "nope x2"
+     google_cloud_api_key: "nope"
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: latest
+    - name: Adding the path in the bashrc files
+      lineinfile:
+        dest: "~/.bashrc"
+        line: 'export SEARCH_ENGINE_ID={{ search_engine_id }}; export GOOGLE_CLOUD_API_KEY={{ google_cloud_api_key }}'
+        insertafter: 'EOF'
+        state: present
+    - name: Adding the alias in the bashrc files
+      lineinfile:
+        dest: "~/.bashrc"
+        line: 'alias imageMe="python /usr/local/bin/google-search-python/image_me.py"'
+        insertafter: 'EOF'
+        state: present
+    - git:
+        repo: "{{ github_src }}"
+        dest: /usr/local/bin/google-search-python
+      become: yes
